@@ -1,3 +1,4 @@
+# A set of fake clinics with cost, geo, and naf data to use as stubs
 planned_parenthood_oakland:
   street_address: 1001 Broadway
   city: Oakland
@@ -5,8 +6,6 @@ planned_parenthood_oakland:
   zip: 94607
   accepts_naf: false
   gestational_limit: 139
-  phone: 3334445555
-  fax: 3334445556
   costs_9wks: 425
   costs_12wks: 475
   costs_18wks: 975
@@ -143,4 +142,3 @@ la_medical_center:
   costs_18wks: 1600
   costs_24wks: 3000
   costs_30wks: null
-
