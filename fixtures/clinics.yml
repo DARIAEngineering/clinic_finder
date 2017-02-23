@@ -1,0 +1,13 @@
+planned_parenthood_oakland:
+  street_address: 1001 Broadway
+  city: Oakland
+  state: CA
+  zip: 94607
+  accepts_naf: false
+  gestational_limit: 139
+  phone: 3334445555
+  fax: 3334445556
+  costs_9wks: 425
+  costs_18wks: 975
+  costs_22wks: null
+
