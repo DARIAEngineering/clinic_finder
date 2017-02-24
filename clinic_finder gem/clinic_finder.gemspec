@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.date        = '2017-02-23'
   s.summary     = "Finding abortion clinics based on zip and LMP"
   s.description = "Abortomap 3000"
-  s.authors     = ["DCAF & Colin Flemming"]
+  s.authors     = ["DCAF & Colin Fleming"]
   s.email       = 'info@dcabortionfund.org'
   s.files       = ["lib/clinic_finder.rb"]
   s.homepage    =
