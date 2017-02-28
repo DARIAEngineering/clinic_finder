@@ -1,6 +1,10 @@
 # clinic_finder
 # ABORTRON 
 
+* CI: https://travis-ci.org/colinxfleming/clinic_finder
+* build script: build.sh
+* run tests: rake test
+
 ## Problem Description
 
 Our case management team is helping patients navigate a variety of logistical challenges to securing an abortion, such as figuring out the closest clinic to them, or the cheapest clinic in their state, or a clinic that will still see them (since many clinics have a gestational age cutoff after which they won't do abortions anymore). The DC area is fortunate enough to have a variety of providers, and we'd like to have a tool that helps us filter down our set of clinics and help our case managers recommend an optimal few clinics, given a patient's particular needs.
