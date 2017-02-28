@@ -1,5 +1,5 @@
 module ClinicFinder
-  def are_cats_great?
+  def self.are_cats_great?
     true
   end
 end
