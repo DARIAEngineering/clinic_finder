@@ -15,13 +15,31 @@ module ClinicFinder
 
   def create_full_address(clinic_collection)
     clinic_addresses = []
-    clinic_collection.each do |clinic|
-      clinic_addresses << ["#{clinic[:street_address]}, #{clinic[:city]}, #{clinic[:state]}"]
+    clinic_collection.each do |clinic, info|
+      clinic_addresses << ["#{info[:street_address]}, #{info[:city]}, #{info[:state]}"]
     end
     clinic_addresses
    # returns an array of string formatted addresses for geocoder method
   end
 
+  # goal: finding the closest clinic to our patient
+  # in: patient address
+  # use geocoder
+  def find_closest_clinic(clinic_collection, patient_address, radius)
+    create_full_address(clinic_collection)
+
+
+  end
 
 end
+
+
+
+
+
+
+
+
+
+
 
