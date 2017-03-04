@@ -13,7 +13,7 @@ class ClinicFinder
   def create_full_address(clinic_collection)
     @clinic_addresses = []
     clinic_collection.each do |clinic, info|
-      @clinic_addresses << ["#{info[:street_address]}, #{info[:city]}, #{info[:state]}"]
+      @clinic_addresses << ["#{info['street_address']}, #{info['city']}, #{info['state']}"]
     end
     @clinic_addresses
    # returns an array of string formatted addresses for geocoder method
@@ -45,4 +45,5 @@ class ClinicFinder
     # returns closest 3 clinics to the patient
   end
 
+end
 end
