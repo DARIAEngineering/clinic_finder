@@ -6,6 +6,7 @@ module ClinicFinder
     puts 'hello world'
   end
 
+
   def create_full_address(clinic_collection)
     @clinic_addresses = []
     clinic_collection.each do |clinic, info|
