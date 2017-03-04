@@ -1,4 +1,3 @@
-require 'clinic_finder/template'
 require 'yaml'
 
 # Core class
@@ -9,5 +8,9 @@ class ClinicFinder
   def initialize(yml_file)
 		@clinics = ::YAML.load_file(yml_file)
   end
+
+  # def locate_cheapest_clinic(patient_zip:, gestational_age:, naf_clinics_only: false)
+
+  # end
 end
 end
