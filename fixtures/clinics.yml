@@ -71,7 +71,7 @@ albuquerque_medical_center:
   state: NM
   zip: 87104
   accepts_naf: true
-  gestational_limit: 210: 
+  gestational_limit: 210
   costs_9wks: 300
   costs_12wks: 325
   costs_18wks: 1100
