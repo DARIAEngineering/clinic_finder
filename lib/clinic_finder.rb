@@ -69,7 +69,7 @@ class ClinicFinder
   # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
   private def decorate_data(data)
     sorted_clinics = []
-    three_cheapest(data).map { |clinic_array| sorted_clinics << { clinic_array.first => clinic_array.last } }
+    three_cheapest(data).map { |clinic_array| sorted_clinics << { name: clinic_array.first, cost: clinic_array.last[@gestational_tier] } }
     sorted_clinics
   end
 
