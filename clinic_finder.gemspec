@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
                   'patients to optimal clinics.'
   s.authors     = ['Team Code for DCAF', 'Colin Fleming', 'Lisa Waldschmitt']
   s.email       = 'info@dcabortionfund.org'
-  s.files       = ['lib/clinic_finder.rb', 'lib/clinic_finder/template.rb']
+  s.files       = ['lib/clinic_finder.rb', 'lib/clinic_finder/gestation_helper.rb']
   s.homepage    = 'http://www.dcabortionfund.org'
   s.license     = 'MIT'
 
