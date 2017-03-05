@@ -51,6 +51,7 @@ class TestClinicFinder < TestClass
     @abortron.create_full_address(100)
     @abortron.clinics_coordinates_conversion
     @abortron.patient_coordinates_conversion("94117")
+    @abortron.calculate_distance
     assert_equal [{:name=>"castro_family_planning", :distance=>0.92356303468274}, {:name=>"planned_parenthood_san_fran", :distance=>1.8319683663768311}, {:name=>"planned_parenthood_oakland", :distance=>9.580895789655901}], @abortron.find_closest_clinics
   end
 
