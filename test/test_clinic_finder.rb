@@ -13,18 +13,18 @@ class TestClinicFinder < TestClass
   	assert_kind_of Hash, @abortron.clinics
   end
 
-  # def test_that_full_addresses_created
-  # 	assert_kind_of Array, @abortron.create_full_address(@abortron.clinics)
-  # end
+  def test_that_full_addresses_created
+  	assert_kind_of Array, @abortron.create_full_address
+  end
 
-  # def test_that_full_address_has_needed_fields
-  # 	assert_equal [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"], ["110 S Market, San Jose, CA"], ["570 Pacific, Monterey, CA"], ["1801 Mountain NW, Albuquerque, NM"], ["7473 Humboldt, Butte Meadows, CA"], ["2220 Tulare, Fresno, CA"], ["2025 Pacific, Los Angeles, CA"], ["3900 W Manchester, Los Angeles, CA"], ["5905 Wilshire, Los Angeles, CA"]], @abortron.create_full_address(@abortron.clinics)
-  # end
+  def test_that_full_address_has_needed_fields
+  	assert_equal [{:name=>"planned_parenthood_oakland", :address=>"1001 Broadway, Oakland, CA"}, {:name=>"planned_parenthood_san_fran", :address=>"2430 Folsom, San Francisco, CA"}, {:name=>"castro_family_planning", :address=>"517 Castro, San Francisco, CA"}, {:name=>"silcon_valley_womens_clinic", :address=>"110 S Market, San Jose, CA"}, {:name=>"discreet_treatment_centers_of_ca", :address=>"570 Pacific, Monterey, CA"}, {:name=>"albuquerque_medical_center", :address=>"1801 Mountain NW, Albuquerque, NM"}, {:name=>"butte_health_clinic", :address=>"7473 Humboldt, Butte Meadows, CA"}, {:name=>"planned_parenthood_fresno", :address=>"2220 Tulare, Fresno, CA"}, {:name=>"womens_health_of_venice_beach", :address=>"2025 Pacific, Los Angeles, CA"}, {:name=>"planned_parenthood_la", :address=>"3900 W Manchester, Los Angeles, CA"}, {:name=>"la_medical_center", :address=>"5905 Wilshire, Los Angeles, CA"}], @abortron.create_full_address
+  end
 
-  # def test_that_clinic_coordinates_are_array
-  # 	addresses = @abortron.create_full_address(@abortron.clinics)
-  # 	assert_kind_of Array, @abortron.clinics_coordinates_conversion(addresses)
-  # end
+  def test_that_clinic_coordinates_are_array
+  	addresses = @abortron.create_full_address
+  	assert_kind_of Hash, @abortron.clinics_coordinates_conversion
+  end
 
   # def test_that_clinic_coordinates_are_found
   # 	addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]

@@ -17,20 +17,17 @@ class ClinicFinder
       @clinic_addresses << {name: clinic, address: "#{info['street_address']}, #{info['city']}, #{info['state']}"}
     end
     @clinic_addresses
-   # returns an array of string formatted addresses for geocoder method
   end
 
   def clinics_coordinates_conversion
     @coordinates_hash = {}
     @clinic_addresses.map! do |address| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
-      # address = address.join
       location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address[:address])
       float_coordinates = location.ll.split(',').map(&:to_f)
       @coordinates_hash[address[:name]] = float_coordinates
     end
     @coordinates_hash
   end
-    # array of strings of lat/long
 
   def patient_coordinates_conversion(patient_zipcode)
     @patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode(patient_zipcode)
