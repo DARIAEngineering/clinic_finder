@@ -31,21 +31,76 @@ Information from a patient that we'd like to plug into the tool:
 * zip code of patient
 * patient's gestational age
 
-So what I think we can do is something like (in ruby-ese):
+## Setup
 
+[PLACEHOLDER FOR INSTALL INSTRUCTIONS]
+
+This gem currently requires data to be in the form of a .yml file, which is passed in to the library instance at the point of initialization as such:
+
+`Abortron::ClinicFinder.new(yaml_file)`
+
+The gem expects yml data to be in the following format:
 
 ```
-Abortron.locate_closest_clinic(Clinic.all, patient_zip: 20011, gestational_age: 130)
-# => should return clinic objects that is the fewest miles away from the patient zip, and that's still seeing patients at that gestational age, both NAF and not-NAF clinics
+planned_parenthood_oakland:
+  street_address: 1001 Broadway
+  city: Oakland
+  state: CA
+  zip: 94607
+  accepts_naf: false
+  gestational_limit: 139
+  costs_9wks: 425
+  costs_12wks: 475
+  costs_18wks: 975
+  costs_24wks: null
+  costs_30wks: null
+  ```
+Hot tip: Before using your yml file, please be sure to feed it through a YAML linter like [YAML Lint](http://www.yamllint.com/) to remove any syntax errors.
 
-Abortron.locate_cheapest_clinic(Clinic.all, patient_zip: 20011, gestational_age: 130, naf_clinics_only: true)
-# => should return clinic objects that is the lowest cost, and that's still seeing patients at that gestational age, and only NAF clinics
+Long term goal here is to make this usable with ActiveRecord models directly.
 
-Abortron.locate_best_clinics(Clinic.all, patient_zip: 20011, gestational_age: 130)
-# => should return a set of closest clinics and cheapest clinics, both NAF and non-NAF clinics
+## Methods
+
+First, you will need to instantiate a library instance.
+
+`@abortron = Abortron::ClinicFinder.new(your_yaml_file)`
+
+To find the cheapest clinic within your dataset that will serve the patient based on their LMP, call:
+
+`@abortron.locate_cheapest_clinic(patient_zip: 94114, gestational_age: 60)`
+
+This will return an array of hashes that look like so:
+
 ```
+=> [{'planned_parenthood_oakland' => {'street_address' => '1001 Broadway', 
+                                      'city' => 'Oakland', 'state' => 'CA', 
+                                      'zip' => 94607, 
+                                      'accepts_naf' => false, 
+                                      'gestational_limit' => 139, 
+                                      'costs_9wks' => 425, 
+                                      'costs_12wks' => 475, 
+                                      'costs_18wks' => 975, 
+                                      'costs_24wks' => nil, 
+                                      'costs_30wks' => nil}}, 
+    {'castro_family_planning' =>     {'street_address' => '5464 Folsom', 
+                                      'city' => 'San Francisco', 
+                                      'state' => 'CA', 
+                                      'zip' => 94607, 
+                                      'accepts_naf' => false, 
+                                      'gestational_limit' => 139, 
+                                      'costs_9wks' => 425, 
+                                      'costs_12wks' => 475, 
+                                      'costs_18wks' => 975, 
+                                      'costs_24wks' => nil, 
+                                      'costs_30wks' => nil}}]
+```
+      
 
-My hope is that this is nice and straightforward, that the core engine is fairly straightforward, and that it's a weekend-sized project that we can push into production almost immediately.
+## Further goals
+* Make gem usable with ActiveRecord models directly, instead of via a yml file that requires maintenance
+* Incorporate check for NAF only (the infrastructure is currently present as a default-false argument, but is not being used)
+* Create method for cheapest **and** closest, defined as the cheapest clinic of your three closest clinics
+* Create a method for easiest/fastest access via public transportation (this may require patient to provide full address, not just zip)
 
 ## Measuring success
 
