@@ -72,37 +72,18 @@ First, you will need to instantiate a library instance.
 
 `@abortron = Abortron::ClinicFinder.new(your_yaml_file)`
 
-To find the cheapest clinic within your dataset that will serve the patient based on their LMP, call:
+To find the **cheapest clinic** within your dataset that will serve the patient based on their LMP, call:
 
 `@abortron.locate_cheapest_clinic(patient_zip: 94114, gestational_age: 60)`
 
 This will return an array of hashes that look like so:
 
 ```
-=> [{'planned_parenthood_oakland' => {'street_address' => '1001 Broadway', 
-                                      'city' => 'Oakland', 'state' => 'CA', 
-                                      'zip' => 94607, 
-                                      'accepts_naf' => false, 
-                                      'gestational_limit' => 139, 
-                                      'costs_9wks' => 425, 
-                                      'costs_12wks' => 475, 
-                                      'costs_18wks' => 975, 
-                                      'costs_24wks' => nil, 
-                                      'costs_30wks' => nil}}, 
-    {'castro_family_planning' =>     {'street_address' => '5464 Folsom', 
-                                      'city' => 'San Francisco', 
-                                      'state' => 'CA', 
-                                      'zip' => 94607, 
-                                      'accepts_naf' => false, 
-                                      'gestational_limit' => 139, 
-                                      'costs_9wks' => 425, 
-                                      'costs_12wks' => 475, 
-                                      'costs_18wks' => 975, 
-                                      'costs_24wks' => nil, 
-                                      'costs_30wks' => nil}}]
+=> [{name: "planned_parenthood_oakland", cost: 1000}, 
+    {name: "castro_family_planning", cost: 1500}]
 ```
 
-To find the closest clinic within your dataset that will serve the patient based on their LMP and patient zip code, call:
+To find the **closest clinic** within your dataset that will serve the patient based on their LMP and patient zip code, call:
 
 `@abortron.locate_nearest_clinic(patient_zip: 94117, gestational_age: 100)`
       
