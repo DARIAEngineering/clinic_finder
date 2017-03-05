@@ -58,6 +58,18 @@ class TestClinicFinder < TestClass
   end
 
   def test_that_returns_top_3_closest_clinics
+    coords_hash = {
+      "Oakland" => {name: "Oakland", coordinates: [37.8021736,  -122.2729171]},
+      "San Francisco" => {name: "San Francisco", coordinates: [37.758278, -122.415025]}
+    }
+
+    patient = [37.7605162,-122.4347025]
+
+    @abortron.calculate_distance(coords_hash, patient)
+
+    # distances = [{name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}, {name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}]
+
+    assert_equal [{name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}], @abortron.find_closest_clinics
   end
 
 end
