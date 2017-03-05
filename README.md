@@ -109,9 +109,9 @@ To find the closest clinic within your dataset that will serve the patient based
 This will return an array of hashes of the 3 closest clinics and their calculated distance, which should look like so:
 
 ```
-=> [{:name => "castro_family_planning", :distance=>0.92356303468274}, 
-   {:name=>"planned_parenthood_san_fran", :distance=>1.8319683663768311}, 
-   {:name=>"planned_parenthood_oakland", :distance=>9.580895789655901}]
+=> [{:name => "castro_family_planning", :distance => 0.92356303468274}, 
+   {:name => "planned_parenthood_san_fran", :distance => 1.8319683663768311}, 
+   {:name => "planned_parenthood_oakland", :distance => 9.580895789655901}]
 ```
 
 ## Further goals
