@@ -7,7 +7,15 @@ Gem::Specification.new do |s|
                   'patients to optimal clinics.'
   s.authors     = ['Team Code for DCAF', 'Colin Fleming', 'Lisa Waldschmitt']
   s.email       = 'info@dcabortionfund.org'
-  s.files       = ['lib/clinic_finder.rb', 'lib/clinic_finder/template.rb']
+  s.files       = ['lib/clinic_finder.rb', 'lib/clinic_finder/gestation_helper.rb']
   s.homepage    = 'http://www.dcabortionfund.org'
   s.license     = 'MIT'
+
+  s.rubyforge_project = "clinic_finder"
+
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- test/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
+
 end
