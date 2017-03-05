@@ -114,6 +114,17 @@ This will return an array of hashes of the 3 closest clinics and their calculate
    {:name => "planned_parenthood_oakland", :distance => 9.580895789655901}]
 ```
 
+## Updating the gem
+
+To publish updates to the gem, merge code into the master branch and then use the following commands:
+
+```
+gem build clinic_finder.gemspec
+gem push clinic_finder-0.0.1.gem
+```
+
+You will need to replace the **0.0.1** with your current version of the gem.
+
 ## Further goals
 * Make gem usable with ActiveRecord models directly, instead of via a yml file that requires maintenance
 * Fix dependency on user manually requiring geokit 
