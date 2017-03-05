@@ -21,30 +21,8 @@ class ClinicFinder
       end
     end
 
-      # gestational_hash = {9: "costs_9wks",
-      #                     }
-
-      # week_increments = gestational_hash.keys.map(&:to_i).push(@gestational_weeks).sort
-
-      # patient_position = week_increments.index(@gestational_weeks)
-
-      # increment = patient_position == 0 ? week_increments[1] : week_increments[patient_position - 1]
-
-      # gestational_tier = gestational_hash[increment.to_s]
-      # return gestational_tier.to_s
-    # end
-
     def within_gestational_limit?(gestational_limit)
       @gestational_age < gestational_limit
     end
-
-
-
-
-    # .initialize - take days; @days
-    # #to_weeks - convert days to weeks
-    #
-
-    # #price_at_gestation(clinic_hash) - spit out cost of procedure based on @days attribute on instance
   end
 end

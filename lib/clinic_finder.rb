@@ -11,17 +11,23 @@ class ClinicFinder
   end
 
   def locate_cheapest_clinic(gestational_age:, naf_clinics_only: false)
-    helper = ::ClinicFinder::GestationHelper.new(gestational_age)
-    gestational_tier = helper.gestational_tier #'cost_9weeks'
+    @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
+    @gestational_tier = @helper.gestational_tier
+    decorate_data(available_clinics)
+  end
 
-    clinics = @clinics.keep_if { |name, information| information[gestational_tier] && helper.within_gestational_limit?(information['gestational_limit']) }
-
+  private def decorate_data(data)
     sorted_clinics = []
-
-    clinics.sort_by { |name, information| information[gestational_tier] }.first(3).map do |clinic_array|
-      sorted_clinics << { clinic_array[0] => clinic_array[1] }
-    end
+    three_cheapest(data).map { |clinic_array| sorted_clinics << { clinic_array.first => clinic_array.last } }
     sorted_clinics
+  end
+
+  private def three_cheapest(data)
+    data.sort_by { |name, information| information[@gestational_tier] }.first(3)
+  end
+
+  private def available_clinics
+    @clinics.keep_if { |name, information| information[@gestational_tier] && @helper.within_gestational_limit?(information['gestational_limit']) }
   end
 end
 end
