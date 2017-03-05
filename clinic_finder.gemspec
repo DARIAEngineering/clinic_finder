@@ -19,6 +19,4 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency 'geokit'
-  # s.add_development_dependency 'minitest-vcr'
-  # s.add_development_dependency 'webmock', '< 2'
 end
