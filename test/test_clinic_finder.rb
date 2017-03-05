@@ -27,34 +27,37 @@ class TestClinicFinder < TestClass
   end
 
   # def test_that_clinic_coordinates_are_found
-  # 	addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]
-  # 	ouput = [["37.8021736, -122.2729171"], ["37.758278,-122.415025"], ["37.7605162,-122.4347025"]]
+  # 	# addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]
+  # 	# ouput = [["37.8021736, -122.2729171"], ["37.758278,-122.415025"], ["37.7605162,-122.4347025"]]
   # 	mock = MiniTest::Mock.new
   # 	mock.expect(:ll, ["37.8021736, -122.2729171"])
-		# Geokit::Geocoders::GoogleGeocoder.stub(:geocode, mock) do
-		# 	@abortron.clinics_coordinates_conversion(addresses)
+		# Geokit::Geocoders::MultiGeocoder.stub(:geocode, mock) do
+		# 	@abortron.clinics_coordinates_conversion
 		# end
   # end
 
-  # def test_that_patient_coordinates_are_found
-		# pt_address = "88 Colin P Kelly Jr St, San Francisco, CA"
-  # 	pt_mock = MiniTest::Mock.new
-  # 	pt_mock.expect(:ll, ["37.78226710000001, -122.3912479"])
-		# Geokit::Geocoders::GoogleGeocoder.stub(:geocode, pt_mock) do
-		# 	@abortron.patient_coordinates_conversion(pt_address)
-		# end
-  # end
+  def test_that_patient_coordinates_are_found
+		pt_address = "88 Colin P Kelly Jr St, San Francisco, CA"
+  	pt_mock = MiniTest::Mock.new
+  	pt_mock.expect(:ll, [37.78226710000001, -122.3912479])
+		Geokit::Geocoders::MultiGeocoder.stub(:geocode, pt_mock) do
+			@abortron.patient_coordinates_conversion(pt_address)
+		end
+  end
 
   def test_that_distances_calculated_between_clinics_and_patient
     coords_hash = {
       "Oakland" => {name: "Oakland", coordinates: [37.8021736,  -122.2729171]},
       "San Francisco" => {name: "San Francisco", coordinates: [37.758278, -122.415025]}
     }
-
-    patient = [37.7605162,-122.4347025]
-
-    assert_equal [
-      {name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}], @abortron.calculate_distance(coords_hash, patient)
+    patient = ["37.7605162,-122.4347025"]
+    distance_mock = MiniTest::Mock.new
+    distance_mock.expect(:ll, [37.7605162,-122.4347025])
+    Geokit::Geocoders::MultiGeocoder.stub(:distance_to, distance_mock) do
+      @abortron.calculate_distance(coords_hash, patient)
+    end
+    # assert_equal [
+    #   {name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}], @abortron.calculate_distance(coords_hash, patient)
   end
 
   def test_that_returns_top_3_closest_clinics

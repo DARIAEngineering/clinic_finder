@@ -22,7 +22,7 @@ class ClinicFinder
   def clinics_coordinates_conversion
     @coordinates_hash = {}
     @clinic_addresses.map! do |address| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
-      location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address[:address])
+      location = ::Geokit::Geocoders::MultiGeocoder.geocode(address[:address])
       float_coordinates = location.ll.split(',').map(&:to_f)
       @coordinates_hash[address[:name]] = float_coordinates
     end
@@ -30,18 +30,18 @@ class ClinicFinder
   end
 
   def patient_coordinates_conversion(patient_zipcode)
-    @patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode(patient_zipcode)
-    @patient_location = @patient_location.ll.to_f
+    @patient_location = ::Geokit::Geocoders::MultiGeocoder.geocode(patient_zipcode)
+    @patient_float_coordinates = @patient_location.ll.first.split(",").map(&:to_f)
   end
 
   def calculate_distance(coordinates_hash, patient_location)
-    @patient_location = patient_location
+    @patient_float_coordinates = patient_location
     @coordinates_hash = coordinates_hash
     distances = []
     @coordinates_hash.each do |name, coordinates|
       # p coordinates
       ll = Geokit::LatLng.new(coordinates[:coordinates][0], coordinates[:coordinates][1])
-      distances << {name: name, distance: ll.distance_to(@patient_location)}
+      distances << {name: name, distance: ll.distance_to(@patient_float_coordinates)}
       # distances = [ {name: "Oakland", distance: 2}, {name: "San Francisco", distance: 1} ]
     end
     @distances = distances.sort {|distance| distance[:distance]}
