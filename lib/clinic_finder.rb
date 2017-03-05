@@ -43,7 +43,7 @@ class ClinicFinder
       distances << {name: name, distance: ll.distance_to(@patient_float_coordinates)}
       # distances = [ {name: "Oakland", distance: 2}, {name: "San Francisco", distance: 1} ]
     end
-    @distances = distances.sort {|distance| distance[:distance]}
+    @distances = distances.sort_by {|distance| distance[:distance]}
   end
 
 
