@@ -36,7 +36,7 @@ Information from a patient that we'd like to plug into the tool:
 
 Add clinic_finder to your application's Gemfile. Consult the rubygems page for most recent version
 
-`gem 'clinic_finder', '~> 0.0.0'` 
+`gem 'clinic_finder', '~> 0.0.1'` 
 
 Run bundler from your terminal
 
