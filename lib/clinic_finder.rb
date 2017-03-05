@@ -11,9 +11,10 @@ class ClinicFinder
 		@clinics = ::YAML.load_file(yml_file)
   end
 
-  def create_full_address
+  def create_full_address(gestational_age) # need to test filtering gestational limit
     @clinic_addresses = []
-    @clinics.each do |clinic, info|
+    filtered_clinics = @clinics.keep_if { |name, info| gestational_age < info['gestational_limit']}
+    filtered_clinics.each do |clinic, info|
       @clinic_addresses << {name: clinic, address: "#{info['street_address']}, #{info['city']}, #{info['state']}"}
     end
     @clinic_addresses
@@ -48,6 +49,15 @@ class ClinicFinder
 
   def find_closest_clinics
     @distances[0..2]
+  end
+
+  # need to write test to make sure everything gets called
+  def locate_nearest_clinic(patient_zipcode:, gestational_age:)
+    patient_coordinates_conversion(patient_zipcode)
+    create_full_address(gestational_age)
+    clinics_coordinates_conversion
+    calculate_distance
+    find_closest_clinics
   end
 
   def locate_cheapest_clinic(gestational_age:, naf_clinics_only: false)
