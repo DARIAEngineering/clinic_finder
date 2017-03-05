@@ -7,28 +7,32 @@ class ClinicFinder
       @gestational_weeks = (@gestational_age/7.0).ceil
     end
 
-    def gestational_tier(clinic_attributes)
-      gestational_hash = {}
-
-      clinic_attributes.each do |key, value|
-        if key.to_s[/\d+/]
-          gestational_hash[(key.to_s[/\d+/])] = key
-        end
+    def gestational_tier
+      if @gestational_weeks < 10
+        'costs_9wks'
+      elsif @gestational_weeks < 13
+        'costs_12wks'
+      elsif @gestational_weeks < 19
+        'costs_18wks'
+      elsif @gestational_weeks < 25
+        'costs_24wks'
+      else
+        'costs_30wks'
       end
-
-      week_tiers = gestational_hash.keys.map(&:to_i)
-
-      week_tiers << @gestational_weeks
-      week_tiers.sort!
-
-      current_position = week_tiers.index(@gestational_weeks)
-
-
-      numerical_term = current_position == 0 ? week_tiers[1] : week_tiers[current_position - 1]
-
-      gestational_tier = gestational_hash[numerical_term.to_s]
-      return gestational_tier.to_s
     end
+
+      # gestational_hash = {9: "costs_9wks",
+      #                     }
+
+      # week_increments = gestational_hash.keys.map(&:to_i).push(@gestational_weeks).sort
+
+      # patient_position = week_increments.index(@gestational_weeks)
+
+      # increment = patient_position == 0 ? week_increments[1] : week_increments[patient_position - 1]
+
+      # gestational_tier = gestational_hash[increment.to_s]
+      # return gestational_tier.to_s
+    # end
 
     def within_gestational_limit?(gestational_limit)
       @gestational_age < gestational_limit

@@ -4,8 +4,7 @@ require_relative '../lib/clinic_finder/gestation_helper'
 class TestGestationHelper < TestClass
   def setup
     @helper = ClinicFinder::GestationHelper.new(10)
-    @clinic =
-    {
+    @clinic = {
       'street_address': '2025 Pacific',
       'city': 'Los Angeles',
       'state': 'CA',
@@ -41,6 +40,16 @@ class TestGestationHelper < TestClass
   end
 
   def test_gestational_tier_under_lower_bound
-    assert_equal 'costs_9wks', @helper.gestational_tier(@clinic)
+    assert_equal 'costs_9wks', @helper.gestational_tier
+  end
+
+  def test_gestational_tier_within_bound
+    @helper = ClinicFinder::GestationHelper.new(100)
+    assert_equal 'costs_18wks', @helper.gestational_tier
+  end
+
+  def test_gestational_tier_above_upper_bound
+    @helper = ClinicFinder::GestationHelper.new(400)
+    assert_equal 'costs_30wks', @helper.gestational_tier
   end
 end
