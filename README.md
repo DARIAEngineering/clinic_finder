@@ -1,6 +1,7 @@
 # clinic_finder
 # ABORTRON 
 
+* gem: https://github.com/colinxfleming/clinic_finder
 * CI: https://travis-ci.org/colinxfleming/clinic_finder
 * build script: build.sh
 * run tests: rake test
@@ -33,7 +34,13 @@ Information from a patient that we'd like to plug into the tool:
 
 ## Setup
 
-[PLACEHOLDER FOR INSTALL INSTRUCTIONS]
+Add clinic_finder to your application's Gemfile. Consult the rubygems page for most recent version
+
+`gem 'clinic_finder', '~> 0.0.0'` 
+
+Run bundler from your terminal
+
+Manually install the geokit gem in your application, as the client_finder gem is dependent on it (*open ticket to resolve)
 
 This gem currently requires data to be in the form of a .yml file, which is passed in to the library instance at the point of initialization as such:
 
@@ -98,9 +105,10 @@ This will return an array of hashes that look like so:
 
 ## Further goals
 * Make gem usable with ActiveRecord models directly, instead of via a yml file that requires maintenance
+* Fix dependency on user manually requiring geokit 
 * Incorporate check for NAF only (the infrastructure is currently present as a default-false argument, but is not being used)
 * Create method for cheapest **and** closest, defined as the cheapest clinic of your three closest clinics
-* Create a method for easiest/fastest access via public transportation (this may require patient to provide full address, not just zip)
+* Create a method for easiest/fastest access via public transportation (this may require patient to provide full address, not just zip code)
 
 ## Measuring success
 
