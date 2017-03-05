@@ -22,13 +22,13 @@ class ClinicFinder
 
   def clinics_coordinates_conversion(clinic_addresses)
     @clinic_addresses = clinic_addresses
-    @clinic_addresses.map do |address|
+    @clinic_addresses.map! do |address|
       address = address.join 
       location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address)
       location = location.ll
     end
     @clinic_addresses
-    # array of arrays of lat/long
+    # array of strings of lat/long
   end
 
   def patient_coordinates_conversion(patient_zipcode)
