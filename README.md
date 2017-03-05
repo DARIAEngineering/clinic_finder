@@ -101,7 +101,18 @@ This will return an array of hashes that look like so:
                                       'costs_24wks' => nil, 
                                       'costs_30wks' => nil}}]
 ```
+
+To find the closest clinic within your dataset that will serve the patient based on their LMP and patient zip code, call:
+
+`@abortron.locate_nearest_clinic(patient_zip: 94117, gestational_age: 100)`
       
+This will return an array of hashes of the 3 closest clinics and their calculated distance, which should look like so:
+
+```
+=> [{:name => "castro_family_planning", :distance=>0.92356303468274}, 
+   {:name=>"planned_parenthood_san_fran", :distance=>1.8319683663768311}, 
+   {:name=>"planned_parenthood_oakland", :distance=>9.580895789655901}]
+```
 
 ## Further goals
 * Make gem usable with ActiveRecord models directly, instead of via a yml file that requires maintenance
