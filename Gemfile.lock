@@ -1,0 +1,19 @@
+PATH
+  remote: .
+  specs:
+    clinic_finder (0.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    geokit (1.10.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  clinic_finder!
+  geokit
+
+BUNDLED WITH
+   1.14.4
