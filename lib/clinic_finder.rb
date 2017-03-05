@@ -1,5 +1,6 @@
 require 'clinic_finder/template'
 require 'yaml'
+require 'geokit'
 
 # Core class
 module Abortron
@@ -21,7 +22,8 @@ class ClinicFinder
 
   def clinics_coordinates_conversion(clinic_addresses)
     @clinic_addresses.map do |address|
-      location = Geokit::Geocoders::GoogleGeocoder.geocode(address)
+      address = address.join
+      location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address)
       location = location.ll
     end
     @clinic_addresses
@@ -29,7 +31,7 @@ class ClinicFinder
   end
 
   def patient_coordinates_conversion(patient_address)
-    @patient_location = Geokit::Geocoders::GoogleGeocoder.geocode(patient_address)
+    @patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode(patient_address)
     @patient_location = @patient_location.ll
   end
 
