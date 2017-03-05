@@ -42,15 +42,15 @@ class TestClinicFinder < TestClass
   	assert_kind_of Array, @abortron.clinics_coordinates_conversion(addresses)
   end
 
-  def test_that_clinic_coordinates_are_found
-  	addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]
-  	ouput = [["37.8021736, -122.2729171"], ["37.758278,-122.415025"], ["37.7605162,-122.4347025"]]
-  	mock = MiniTest::Mock.new
-  	mock.expect(:ll, ["37.8021736, -122.2729171"])
-		Geokit::Geocoders::GoogleGeocoder.stub(:geocode, mock) do
-			@abortron.clinics_coordinates_conversion(addresses)
-		end
-  end
+  # def test_that_clinic_coordinates_are_found
+  # 	addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]
+  # 	ouput = [["37.8021736, -122.2729171"], ["37.758278,-122.415025"], ["37.7605162,-122.4347025"]]
+  # 	mock = MiniTest::Mock.new
+  # 	mock.expect(:ll, ["37.8021736, -122.2729171"])
+		# Geokit::Geocoders::GoogleGeocoder.stub(:geocode, mock) do
+		# 	@abortron.clinics_coordinates_conversion(addresses)
+		# end
+  # end
 
   def test_that_patient_coordinates_are_found
 		pt_address = "88 Colin P Kelly Jr St, San Francisco, CA"
