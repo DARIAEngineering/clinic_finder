@@ -1,11 +1,29 @@
 require 'clinic_finder/template'
 require 'yaml'
 require 'geokit'
+# require 'clinic_finder/configuration'
+
 
 # Core class
 module Abortron
 class ClinicFinder
 	attr_reader :clinics
+
+  # class << self
+  #   attr_accessor :configuration
+  # end
+
+  # def self.configuration
+  #   @configuration ||= Configuration.new
+  # end
+
+  # def self.reset
+  #   @configuration = Configuration.new
+  # end
+
+  # def self.configure
+  #   yield(configuration)
+  # end
 
   def initialize(yml_file)
 		@clinics = ::YAML.load_file(yml_file)
