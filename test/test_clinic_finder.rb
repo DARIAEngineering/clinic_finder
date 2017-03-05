@@ -4,22 +4,6 @@ require_relative '../lib/clinic_finder'
 
 class TestClinicFinder < TestClass
 
-
-  # test '#apply_subscription' do
-  #  	mock = Minitest::Mock.new
-  #  	mock.expect :clinics_coordinates_conversion, true
-		
-  #  	SubscriptionService.stub :new, mock do
-  #  		user = users(:one)
-  #  		assert user.apply_subscription
-  #  	end
-		
-  #  	assert_mock mock # New in Minitest 5.9.0
-  #  	assert mock.verify # Old way of verifying mocks
-  # end
-
-
-
   def setup
   	file = File.join(File.dirname(__FILE__), '../fixtures/clinics.yml')
   	@abortron = Abortron::ClinicFinder.new(file)
@@ -28,19 +12,19 @@ class TestClinicFinder < TestClass
   def test_that_initialize_sets_clinic_variable
   	assert_kind_of Hash, @abortron.clinics
   end
-  	 
-  def test_that_full_addresses_created
-  	assert_kind_of Array, @abortron.create_full_address(@abortron.clinics)
-  end
 
-  def test_that_full_address_has_needed_fields
-  	assert_equal [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"], ["110 S Market, San Jose, CA"], ["570 Pacific, Monterey, CA"], ["1801 Mountain NW, Albuquerque, NM"], ["7473 Humboldt, Butte Meadows, CA"], ["2220 Tulare, Fresno, CA"], ["2025 Pacific, Los Angeles, CA"], ["3900 W Manchester, Los Angeles, CA"], ["5905 Wilshire, Los Angeles, CA"]], @abortron.create_full_address(@abortron.clinics)
-  end
+  # def test_that_full_addresses_created
+  # 	assert_kind_of Array, @abortron.create_full_address(@abortron.clinics)
+  # end
 
-  def test_that_clinic_coordinates_are_array
-  	addresses = @abortron.create_full_address(@abortron.clinics)
-  	assert_kind_of Array, @abortron.clinics_coordinates_conversion(addresses)
-  end
+  # def test_that_full_address_has_needed_fields
+  # 	assert_equal [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"], ["110 S Market, San Jose, CA"], ["570 Pacific, Monterey, CA"], ["1801 Mountain NW, Albuquerque, NM"], ["7473 Humboldt, Butte Meadows, CA"], ["2220 Tulare, Fresno, CA"], ["2025 Pacific, Los Angeles, CA"], ["3900 W Manchester, Los Angeles, CA"], ["5905 Wilshire, Los Angeles, CA"]], @abortron.create_full_address(@abortron.clinics)
+  # end
+
+  # def test_that_clinic_coordinates_are_array
+  # 	addresses = @abortron.create_full_address(@abortron.clinics)
+  # 	assert_kind_of Array, @abortron.clinics_coordinates_conversion(addresses)
+  # end
 
   # def test_that_clinic_coordinates_are_found
   # 	addresses = [["1001 Broadway, Oakland, CA"], ["2430 Folsom, San Francisco, CA"], ["517 Castro, San Francisco, CA"]]
@@ -52,17 +36,28 @@ class TestClinicFinder < TestClass
 		# end
   # end
 
-  def test_that_patient_coordinates_are_found
-		pt_address = "88 Colin P Kelly Jr St, San Francisco, CA"
-  	pt_mock = MiniTest::Mock.new
-  	pt_mock.expect(:ll, ["37.78226710000001, -122.3912479"])
-		Geokit::Geocoders::GoogleGeocoder.stub(:geocode, pt_mock) do
-			@abortron.patient_coordinates_conversion(pt_address)
-		end
-  end
+  # def test_that_patient_coordinates_are_found
+		# pt_address = "88 Colin P Kelly Jr St, San Francisco, CA"
+  # 	pt_mock = MiniTest::Mock.new
+  # 	pt_mock.expect(:ll, ["37.78226710000001, -122.3912479"])
+		# Geokit::Geocoders::GoogleGeocoder.stub(:geocode, pt_mock) do
+		# 	@abortron.patient_coordinates_conversion(pt_address)
+		# end
+  # end
 
   def test_that_distances_calculated_between_clinics_and_patient
+    coords_hash = {
+      "Oakland" => {name: "Oakland", coordinates: [37.8021736,  -122.2729171]},
+      "San Francisco" => {name: "San Francisco", coordinates: [37.758278, -122.415025]}
+    }
 
+    patient = [37.7605162,-122.4347025]
+
+    assert_equal [
+      {name: "San Francisco", distance: 1.087156200012801}, {name: "Oakland", distance: 9.302242978400399}], @abortron.calculate_distance(coords_hash, patient)
+  end
+
+  def test_that_returns_top_3_closest_clinics
   end
 
 end
