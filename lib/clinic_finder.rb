@@ -9,20 +9,23 @@ module Abortron
 class ClinicFinder
   attr_reader :clinics
 
-  def initialize(clinics)
-    @clinics = clinics
+  def initialize(clinics, gestational_age: 999, naf_only: false, medicaid_only: false)
+    @clinics = filter_by_params clinics,
+                                gestational_age,
+                                naf_only,
+                                medicaid_only
   end
 
   def create_full_address
-    filtered_clinics.map do |clinic|
+    clinic_addresses = @clinics.map do |clinic|
       { name: clinic.name,
         address: "#{clinic.street_address}, #{clinic.city}, #{clinic.state}" }
     end
     clinic_addresses
   end
 
-  def filter_by_params(gestational_age, naf_only, medicaid_only)
-    filtered_clinics = @clinics.keep_if do |clinic|
+  def filter_by_params(clinics, gestational_age, naf_only, medicaid_only)
+    filtered_clinics = clinics.keep_if do |clinic|
       gestational_age < clinic.gestational_limit &&
         (naf_only ? clinic.accepts_naf : true) &&
         (medicaid_only ? clinic.accepts_medicaid : true)
@@ -60,18 +63,19 @@ class ClinicFinder
   end
 
   # need to write test to make sure everything gets called
-  def locate_nearest_clinic(patient_zipcode:, gestational_age: 999, naf_only: false, medicaid_only: false)
+  def locate_nearest_clinic(patient_zipcode:, gestational_age: 999, naf_only: false, medicaid_only: false, limit: 5)
     patient_coordinates_conversion(patient_zipcode)
-    filtered_clinics = filter_by_params gestational_age, naf_only, medicaid_only
-    clinics_with_address = create_full_address(filtered_clinics)
+    clinics_with_address = create_full_address @clinics
     clinics_coordinates_conversion
     calculate_distance
     find_closest_clinics
   end
 
-  def locate_cheapest_clinic(gestational_age: 999, naf_only: false, medicaid_only: false)
-    @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
-    @gestational_tier = @helper.gestational_tier
+  def locate_cheapest_clinic(gestational_age: 999, naf_only: false, medicaid_only: false, limit: 5)
+    # @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
+    # filtered_clinics = filter_by_params gestational_age, naf_only, medicaid_only
+
+    # @gestational_tier = @helper.gestational_tier
     decorate_data(available_clinics)
   end
 
