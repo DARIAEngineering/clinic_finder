@@ -1,6 +1,8 @@
 require 'yaml'
 require 'geokit'
 require_relative './clinic_finder/gestation_helper'
+require_relative 'clinic_finder/affordability_helper'
+require_relative 'clinic_finder/geocoding_helper'
 
 # Core class
 module Abortron
@@ -19,20 +21,21 @@ class ClinicFinder
     clinic_addresses
   end
 
-  def filter_by_gestational_age(gestational_age)
+  def filter_by_params(gestational_age, naf_only, medicaid_only)
     filtered_clinics = @clinics.keep_if do |clinic|
-      gestational_age < clinic.gestational_limit
+      gestational_age < clinic.gestational_limit &&
+        (naf_only ? clinic.accepts_naf : true) &&
+        (medicaid_only ? clinic.accepts_medicaid : true)
     end
     filtered_clinics
   end
 
-  def clinics_coordinates_conversion
-    @coordinates_hash = {}
-    @clinic_addresses.map! do |address| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
+  def clinics_coordinates_conversion(clinics)
+    geocoded_clinics = clinics.map do |clinic| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
       location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address[:address])
       float_coordinates = location.ll.split(',').map(&:to_f)
       @coordinates_hash[address[:name]] = float_coordinates
-      sleep(0.5)
+      sleep(0.5) # TODO figure out workaround
     end
     @coordinates_hash
   end
@@ -57,15 +60,16 @@ class ClinicFinder
   end
 
   # need to write test to make sure everything gets called
-  def locate_nearest_clinic(patient_zipcode:, gestational_age:, naf_only: false, medicaid_only: false)
+  def locate_nearest_clinic(patient_zipcode:, gestational_age: 999, naf_only: false, medicaid_only: false)
     patient_coordinates_conversion(patient_zipcode)
-    clinics_with_address =create_full_address(gestational_age)
+    filtered_clinics = filter_by_params gestational_age, naf_only, medicaid_only
+    clinics_with_address = create_full_address(filtered_clinics)
     clinics_coordinates_conversion
     calculate_distance
     find_closest_clinics
   end
 
-  def locate_cheapest_clinic(gestational_age:, naf_only: false, medicaid_only: false)
+  def locate_cheapest_clinic(gestational_age: 999, naf_only: false, medicaid_only: false)
     @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
     @gestational_tier = @helper.gestational_tier
     decorate_data(available_clinics)
