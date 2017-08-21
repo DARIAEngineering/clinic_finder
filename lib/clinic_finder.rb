@@ -5,19 +5,25 @@ require_relative './clinic_finder/gestation_helper'
 # Core class
 module Abortron
 class ClinicFinder
-	attr_reader :clinics
+  attr_reader :clinics
 
-  def initialize(yml_file)
-		@clinics = ::YAML.load_file(yml_file)
+  def initialize(clinics)
+    @clinics = clinics
   end
 
-  def create_full_address(gestational_age) # need to test filtering gestational limit
-    @clinic_addresses = []
-    filtered_clinics = @clinics.keep_if { |name, info| gestational_age < info['gestational_limit']}
-    filtered_clinics.each do |clinic, info|
-      @clinic_addresses << {name: clinic, address: "#{info['street_address']}, #{info['city']}, #{info['state']}"}
+  def create_full_address
+    filtered_clinics.map do |clinic|
+      { name: clinic.name,
+        address: "#{clinic.street_address}, #{clinic.city}, #{clinic.state}" }
     end
-    @clinic_addresses
+    clinic_addresses
+  end
+
+  def filter_by_gestational_age(gestational_age)
+    filtered_clinics = @clinics.keep_if do |clinic|
+      gestational_age < clinic.gestational_limit
+    end
+    filtered_clinics
   end
 
   def clinics_coordinates_conversion
@@ -46,38 +52,39 @@ class ClinicFinder
     @distances = distances.sort_by {|distance| distance[:distance]}
   end
 
-
   def find_closest_clinics
-    @distances[0..2]
+    @distances[0..4]
   end
 
   # need to write test to make sure everything gets called
-  def locate_nearest_clinic(patient_zipcode:, gestational_age:)
+  def locate_nearest_clinic(patient_zipcode:, gestational_age:, naf_only: false, medicaid_only: false)
     patient_coordinates_conversion(patient_zipcode)
-    create_full_address(gestational_age)
+    clinics_with_address =create_full_address(gestational_age)
     clinics_coordinates_conversion
     calculate_distance
     find_closest_clinics
   end
 
-  def locate_cheapest_clinic(gestational_age:, naf_clinics_only: false)
+  def locate_cheapest_clinic(gestational_age:, naf_only: false, medicaid_only: false)
     @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
     @gestational_tier = @helper.gestational_tier
     decorate_data(available_clinics)
   end
 
+  private
+
   # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
-  private def decorate_data(data)
+  def decorate_data(data)
     sorted_clinics = []
     three_cheapest(data).map { |clinic_array| sorted_clinics << { name: clinic_array.first, cost: clinic_array.last[@gestational_tier] } }
     sorted_clinics
   end
 
-  private def three_cheapest(data)
+  def three_cheapest(data)
     data.sort_by { |name, information| information[@gestational_tier] }.first(3)
   end
 
-  private def available_clinics
+  def available_clinics
     @clinics.keep_if { |name, information| information[@gestational_tier] && @helper.within_gestational_limit?(information['gestational_limit']) }
   end
 end
