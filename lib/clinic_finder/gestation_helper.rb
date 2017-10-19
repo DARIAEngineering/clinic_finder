@@ -8,7 +8,7 @@ class ClinicFinder
       # We round up under the assumption that as soon as you pass the threshhold
       # of a pricing tier - say, 9 weeks and 1 day - you will be priced into the
       # more expensive tier (12 weeks). Change logic if this is not the case.
-      @gestational_weeks = (@gestational_age/7.0).ceil
+      @gestational_weeks = (@gestational_age / 7.0).ceil
     end
 
     def gestational_tier
