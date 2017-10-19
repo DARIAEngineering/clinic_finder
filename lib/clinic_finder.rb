@@ -5,25 +5,30 @@ require_relative 'clinic_finder/affordability_helper'
 require_relative 'clinic_finder/geocoding_helper'
 
 # Core class. Top level stuff to invoke are:
-# * locate_nearest_clinic
-# * locate_cheapest_clinic
+# * locate_nearest_clinics
+# * locate_cheapest_clinics
 module Abortron
   class ClinicFinder
+    include Geocoder
+
     attr_reader :clinics
+    attr_accessor :patient # no reason to not assign this to an obj level
 
     def initialize(clinics, gestational_age: 999, naf_only: false, medicaid_only: false)
-      @clinics = filter_by_params clinics,
-                                  gestational_age,
-                                  naf_only,
-                                  medicaid_only
+      filtered_clinics = filter_by_params clinics,
+                                          gestational_age,
+                                          naf_only,
+                                          medicaid_only
+
+      @clinics = filtered_clinics # TODO turn these into ostructs
     end
 
     # need to write test to make sure everything gets called
-    def locate_nearest_clinic(patient_zipcode, limit: 5)
-      patient_coordinates = patient_coordinates_conversion(patient_zipcode)
-      clinics_with_address = create_full_address @clinics
-      clinics_coordinates_conversion clinics_with_address
-      calculate_distance
+    def locate_nearest_clinics(zipcode, limit: 5)
+      patient_coordinates = patient_coordinates_from_zip zipcode
+      clinics_with_address = build_full_address @clinics
+      clinics_with_coordinates = clinics_coordinates clinics_with_address
+      calculate_distances clinics_with_coordinates, patient_coordinates
       find_closest_clinics
     end
 
