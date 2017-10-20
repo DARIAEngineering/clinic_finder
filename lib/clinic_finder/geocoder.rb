@@ -3,11 +3,22 @@ require 'ostruct'
 module ClinicFinder
   # Functionality pertaining to geography
   module Geocoder
+    # Get a patient's latitude and longitude.
     def get_patient_coordinates_from_zip(zipcode)
-      patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode(zipcode)
-      @patient.location = patient_location.ll
+      patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode zipcode
+      @patient_context.location = patient_location.ll
     end
 
+    # Attach a distance field to individual clinic_structs for sorting.
+    def add_distances_to_clinic_openstructs
+      add_clinic_full_address
+      determine_clinic_coordinates
+      calculate_distances
+    end
+
+    private
+
+    # Attach a full address for consumption by the geocoder.
     def add_clinic_full_address
       @clinic_structs.each do |clinic|
         clinic.full_address = "#{clinic.street_address}, " \
@@ -15,8 +26,11 @@ module ClinicFinder
       end
     end
 
+    # Attach a clinic's latitude and longitude.
     def determine_clinic_coordinates
-      @clinic_structs.each do |clinic| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
+      @clinic_structs.each do |clinic|
+        # The Geocoder is looking for something like this:
+        # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
         location = ::Geokit::Geocoders::GoogleGeocoder.geocode clinic.full_address
         sleep(0.5) # TODO figure out workaround. probably slamming in api key
         coordinates = location.ll.split(',').map(&:to_f)
@@ -25,9 +39,11 @@ module ClinicFinder
       end
     end
 
+    # Calculate distance between a clinic and the patient's zipcode.
     def calculate_distances
       @clinic_structs.each do |clinic|
-        clinic.distance = clinic.coordinates.distance_to(@patient.location)
+        clinic.distance = clinic.coordinates
+                                .distance_to(@patient_context.location)
       end
     end
   end
