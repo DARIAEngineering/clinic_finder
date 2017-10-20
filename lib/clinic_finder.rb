@@ -1,15 +1,15 @@
 require 'yaml'
 require 'geokit'
-require_relative './clinic_finder/gestation_helper'
-require_relative 'clinic_finder/affordability_helper'
-require_relative 'clinic_finder/geocoding_helper'
+# require_relative './clinic_finder/gestation_helper'
+# require_relative 'clinic_finder/affordability_helper'
+require 'clinic_finder/geocoder'
 
 # Core class. Top level stuff to invoke are:
-# * locate_nearest_clinics
-# * locate_cheapest_clinics
-module Abortron
-  class ClinicFinder
-    include Geocoder
+# * ClinicFinder::Locator#locate_nearest_clinics
+# * ClinicFinder::Locator#locate_cheapest_clinics
+module ClinicFinder
+  class Locator
+    include ClinicFinder::Geocoder
 
     attr_reader :clinics
     attr_accessor :patient # no reason to not assign this to an obj level

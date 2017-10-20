@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
                    'Colin Fleming', 'Lisa Waldschmitt', 'Team Code for DCAF']
   s.email       = 'info@dcabortionfund.org'
   s.files       = ['lib/clinic_finder.rb',
-                   'lib/clinic_finder/gestation_helper.rb']
+                   'lib/clinic_finder/geocoder.rb']
   s.homepage    = 'http://www.dcabortionfund.org'
   s.license     = 'MIT'
 

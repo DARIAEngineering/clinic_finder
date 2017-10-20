@@ -1,6 +1,6 @@
 require 'ostruct'
 
-module Abortron
+module ClinicFinder
   # Functionality pertaining to geography
   module Geocoder
     def patient_coordinates_from_zip(zipcode)
