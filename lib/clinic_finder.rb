@@ -25,7 +25,7 @@ module ClinicFinder
       @clinic_structs = filtered_clinics.map do |clinic|
         OpenStruct.new clinic.attributes
       end
-      @patient = OpenStruct.new
+      @patient_context = OpenStruct.new
     end
 
     # Return a set of the closest clinics and their attributes,
