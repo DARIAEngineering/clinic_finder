@@ -11,16 +11,20 @@ module ClinicFinder
   class Locator
     include ClinicFinder::Geocoder
 
-    attr_reader :clinics
+    attr_accessor :clinics
+    attr_accessor :clinic_structs
     attr_accessor :patient # no reason to not assign this to an obj level
 
     def initialize(clinics, gestational_age: 999, naf_only: false, medicaid_only: false)
+      @clinics = clinics
+
+      puts clinics
       filtered_clinics = filter_by_params clinics,
                                           gestational_age,
                                           naf_only,
                                           medicaid_only
 
-      @clinics = filtered_clinics # TODO turn these into ostructs
+      @clinic_structs = filtered_clinics # TODO turn these into ostructs
     end
 
     # need to write test to make sure everything gets called
@@ -29,6 +33,7 @@ module ClinicFinder
       clinics_with_address = build_full_address @clinics
       clinics_with_coordinates = clinics_coordinates clinics_with_address
       clinics_with_distance = calculate_distances(clinics_with_coordinates, patient_coordinates)
+
       clinics_with_distance.sort_by(&:distance).reverse.take(limit)
     end
 
@@ -44,10 +49,12 @@ module ClinicFinder
 
     def filter_by_params(clinics, gestational_age, naf_only, medicaid_only)
       filtered_clinics = clinics.keep_if do |clinic|
-        gestational_age < clinic.gestational_limit &&
+        puts clinic
+        gestational_age < (clinic.gestational_limit || 1000) &&
           (naf_only ? clinic.accepts_naf : true) &&
           (medicaid_only ? clinic.accepts_medicaid : true)
       end
+      puts filtered_clinics
       filtered_clinics
     end
 

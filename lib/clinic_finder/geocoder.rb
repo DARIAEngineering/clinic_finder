@@ -11,14 +11,14 @@ module ClinicFinder
     def build_full_address(clinics)
       clinics.map do |clinic|
         OpenStruct.new name: clinic.name,
-                       full_address: "#{clinic.street_address}, "
+                       full_address: "#{clinic.street_address}, " \
                                      "#{clinic.city}, #{clinic.state}"
       end
     end
 
     def clinics_coordinates(clinics)
       clinics.map do |clinic| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
-        location = ::Geokit::Geocoders::GoogleGeocoder.geocode clinic[:full_address]
+        location = ::Geokit::Geocoders::GoogleGeocoder.geocode clinic.full_address
         sleep(0.5) # TODO figure out workaround. probably slamming in api key
         coordinates = location.ll.split(',').map(&:to_f)
 
