@@ -22,15 +22,18 @@ module ClinicFinder
                                           medicaid_only
 
       @clinics = filtered_clinics
-      @clinic_structs = OpenStruct.new filtered_clinics.map(&:attributes)
+      @clinic_structs = filtered_clinics.map do |clinic|
+        OpenStruct.new clinic.attributes
+      end
+      @patient = OpenStruct.new
     end
 
     # need to write test to make sure everything gets called
     def locate_nearest_clinics(zipcode, limit: 5)
-      patient_coordinates = patient_coordinates_from_zip zipcode
-      clinics_with_address = build_full_address @clinics
-      clinics_with_coordinates = clinics_coordinates clinics_with_address
-      clinics_with_distance = calculate_distances(clinics_with_coordinates, patient_coordinates)
+      get_patient_coordinates_from_zip zipcode
+      add_clinic_full_address
+      determine_clinic_coordinates
+      calculate_distances
 
       clinics_with_distance.sort_by(&:distance).reverse.take(limit)
     end
