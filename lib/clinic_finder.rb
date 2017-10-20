@@ -16,15 +16,13 @@ module ClinicFinder
     attr_accessor :patient # no reason to not assign this to an obj level
 
     def initialize(clinics, gestational_age: 999, naf_only: false, medicaid_only: false)
-      # @clinics = clinics
-
-      puts clinics
       filtered_clinics = filter_by_params clinics,
                                           gestational_age,
                                           naf_only,
                                           medicaid_only
 
-      @clinics = filtered_clinics # TODO turn these into ostructs
+      @clinics = filtered_clinics
+      @clinic_structs = OpenStruct.new filtered_clinics.map(&:attributes)
     end
 
     # need to write test to make sure everything gets called
