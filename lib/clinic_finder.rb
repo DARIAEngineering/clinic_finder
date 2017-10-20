@@ -28,8 +28,8 @@ module Abortron
       patient_coordinates = patient_coordinates_from_zip zipcode
       clinics_with_address = build_full_address @clinics
       clinics_with_coordinates = clinics_coordinates clinics_with_address
-      calculate_distances clinics_with_coordinates, patient_coordinates
-      find_closest_clinics
+      clinics_with_distance = calculate_distances(clinics_with_coordinates, patient_coordinates)
+      clinics_with_distance.sort_by(&:distance).reverse.take(limit)
     end
 
     def locate_cheapest_clinic(gestational_age: 999, limit: 5)
@@ -41,10 +41,6 @@ module Abortron
     end
 
     private
-
-    def find_closest_clinics
-      @distances[0..4]
-    end
 
     def filter_by_params(clinics, gestational_age, naf_only, medicaid_only)
       filtered_clinics = clinics.keep_if do |clinic|
