@@ -21,13 +21,18 @@ module ClinicFinder
     # Attach a full address for consumption by the geocoder.
     def add_clinic_full_address
       @clinic_structs.each do |clinic|
-        clinic.full_address = "#{clinic.street_address}, " \
-                              "#{clinic.city}, #{clinic.state}"
+        addr = if clinic.city && clinic.state
+                 "#{clinic.street_address}, " \
+                 "#{clinic.city}, #{clinic.state}"
+               end
+
+        clinic.full_address = addr
       end
     end
 
     # Attach a clinic's latitude and longitude.
     def determine_clinic_coordinates
+      puts @clinic_structs
       @clinic_structs.each do |clinic|
         # The Geocoder is looking for something like this:
         # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}

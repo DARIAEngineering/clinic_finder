@@ -23,7 +23,12 @@ module ClinicFinder
 
       @clinics = filtered_clinics
       @clinic_structs = filtered_clinics.map do |clinic|
-        OpenStruct.new clinic.attributes
+        data = if clinic.is_a? OpenStruct
+          clinic.marshal_dump
+        else
+          clinic.attributes # ActiveRecord, Mongoid, etc.
+        end
+        OpenStruct.new data
       end
       @patient_context = OpenStruct.new
     end
