@@ -1,6 +1,6 @@
 require 'yaml'
 require 'geokit'
-require 'openstruct'
+require 'ostruct'
 # require_relative './clinic_finder/gestation_helper'
 # require_relative 'clinic_finder/affordability_helper'
 require 'clinic_finder/geocoder'

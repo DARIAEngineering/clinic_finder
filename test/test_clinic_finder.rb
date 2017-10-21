@@ -1,11 +1,10 @@
 require 'test_helper'
 require_relative '../lib/clinic_finder'
 
-class TestClinicFinder < TestClass
-
+class TestClinicFinderLocator < TestClass
   def setup
   	file = File.join(File.dirname(__FILE__), '../fixtures/clinics.yml')
-  	@abortron = Abortron::ClinicFinder.new(file)
+  	@abortron = ClinicFinder::Locator.new(file)
   end
 
   def test_that_initialize_sets_clinic_variable
