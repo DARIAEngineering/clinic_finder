@@ -5,19 +5,32 @@ require_relative '../lib/clinic_finder'
 class TestClinicFinderLocator < TestClass
   before { @clinics = load_clinic_fixtures }
 
-  describe 'initialization' do
+  describe 'initialization with clinics' do
     before do
+      # puts @clinics.first
       @abortron = ClinicFinder::Locator.new @clinics
+      # puts @abortron.inspect.to_s
+      # puts @abortron.clinics.inspect.to_s
     end
 
     it 'should initialize with clinics' do
-
+      puts @abortron.clinics
+      assert(@abortron.clinics.find { |c| c.name == 'Butte Health Clinic' })
+      assert_equal @clinics.count, @abortron.clinics.count
+      assert_equal @abortron.clinics.count, @abortron.clinic_structs.count
     end
-      
-    it 'should puts' do
-      puts 'YEP'
 
+    it 'should have mirroring clinic and clinic_structs on init' do
+      @abortron.clinic_structs.each do |clinic_struct|
+        clinic = @abortron.clinics.find { |c| c._id == clinic_struct._id }
+        clinic.each do |k, _v|
+          assert_equal clinic[k], clinic_struct[k]
+        end
+      end
     end
+  end
+
+  describe 'initializing with filters' do
 
   end
 end
