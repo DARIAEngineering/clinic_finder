@@ -1,13 +1,19 @@
 require 'test_helper'
 require_relative '../lib/clinic_finder'
 
+# Test initialization and top level methods.
 class TestClinicFinderLocator < TestClass
-  before do
-    @clinics = load_clinic_fixtures
-  	@abortron = ClinicFinder::Locator.new clinics
-  end
+  before { @clinics = load_clinic_fixtures }
 
-  describe 'clinic fixtures' do
+  describe 'initialization' do
+    before do
+      @abortron = ClinicFinder::Locator.new @clinics
+    end
+
+    it 'should initialize with clinics' do
+
+    end
+      
     it 'should puts' do
       puts 'YEP'
 
