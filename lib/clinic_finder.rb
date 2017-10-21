@@ -1,35 +1,40 @@
 require 'yaml'
 require 'geokit'
+require 'openstruct'
 # require_relative './clinic_finder/gestation_helper'
 # require_relative 'clinic_finder/affordability_helper'
 require 'clinic_finder/geocoder'
 
-# Core class. Top level stuff to invoke are:
-# * ClinicFinder::Locator#locate_nearest_clinics
-# * ClinicFinder::Locator#locate_cheapest_clinics
+# Use as follows:
+# pt = Patient.find('123');
+# finder = ClinicFinder::Locator.new(
+#   Clinic.all,
+#   gestational_age: pt.gestational_age, # in days
+#   naf_only: true, # Limit results to NAF clinics
+#   medicaid_only: true # Limit results to Medicaid clinics
+# )
+# finder.locate_nearest_clinics pt.zip, limit: 5
+# finder.locate_cheapest_clinics limit: 5
 module ClinicFinder
+  # Core class for accessing stuff. The good stuff is:
+  # * ClinicFinder::Locator#locate_nearest_clinics
+  # * ClinicFinder::Locator#locate_cheapest_clinics
   class Locator
     include ClinicFinder::Geocoder
 
     attr_accessor :clinics
     attr_accessor :clinic_structs # a scratch version of clinics
-    attr_accessor :patient_context # no reason to not assign this to an obj level
+    attr_accessor :patient_context # no reason to not assign this to an obj lvl
 
-    def initialize(clinics, gestational_age: 999, naf_only: false, medicaid_only: false)
+    def initialize(clinics, gestational_age: 999,
+                   naf_only: false, medicaid_only: false)
       filtered_clinics = filter_by_params clinics,
                                           gestational_age,
                                           naf_only,
                                           medicaid_only
 
       @clinics = filtered_clinics
-      @clinic_structs = filtered_clinics.map do |clinic|
-        data = if clinic.is_a? OpenStruct
-          clinic.marshal_dump
-        else
-          clinic.attributes # ActiveRecord, Mongoid, etc.
-        end
-        OpenStruct.new data
-      end
+      @clinic_structs = build_clinic_structs
       @patient_context = OpenStruct.new
     end
 
@@ -55,6 +60,18 @@ module ClinicFinder
     end
 
     private
+
+    # Set up mutable clinic structs.
+    def build_clinic_structs
+      @clinics.map do |clinic|
+        data = if clinic.is_a? OpenStruct
+                 clinic.marshal_dump
+               else
+                 clinic.attributes # ActiveRecord, Mongoid, etc.
+               end
+        OpenStruct.new data
+      end
+    end
 
     # Based on initialization fields, narrow the list of clinics to
     # just what we need.
