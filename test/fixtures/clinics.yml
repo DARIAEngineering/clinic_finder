@@ -1,5 +1,6 @@
 # A set of fake clinics with cost, geo, and naf data to use as stubs
 planned_parenthood_oakland:
+  _id: abgd1
   street_address: 1001 Broadway
   city: Oakland
   state: CA
@@ -14,6 +15,7 @@ planned_parenthood_oakland:
   costs_30wks: null
 
 planned_parenthood_san_fran:
+  _id: abgd2
   street_address: 2430 Folsom
   city: San Francisco
   state: CA
@@ -29,6 +31,7 @@ planned_parenthood_san_fran:
   costs_30wks: null
 
 castro_family_planning:
+  _id: abgd3
   street_address: 517 Castro
   city: San Francisco
   state: CA
@@ -43,6 +46,7 @@ castro_family_planning:
   costs_30wks: null
 
 silcon_valley_womens_clinic:
+  _id: abgd4
   street_address: 110 S Market
   city: San Jose
   state: CA
@@ -57,6 +61,7 @@ silcon_valley_womens_clinic:
   costs_30wks: null
 
 discreet_treatment_centers_of_ca:
+  _id: abgd5
   street_address: 570 Pacific
   city: Monterey
   state: CA
@@ -71,6 +76,7 @@ discreet_treatment_centers_of_ca:
   costs_30wks: null
 
 albuquerque_medical_center:
+  _id: abgd6
   street_address: 1801 Mountain NW
   city: Albuquerque
   state: NM
@@ -85,6 +91,7 @@ albuquerque_medical_center:
   costs_30wks: 9500
 
 butte_health_clinic:
+  _id: abgd7
   street_address: 7473 Humboldt
   city: Butte Meadows
   state: CA
@@ -99,6 +106,7 @@ butte_health_clinic:
   costs_30wks: null
 
 planned_parenthood_fresno:
+  _id: abgd8
   street_address: 2220 Tulare
   city: Fresno
   state: CA
@@ -113,6 +121,7 @@ planned_parenthood_fresno:
   costs_30wks: null
 
 womens_health_of_venice_beach:
+  _id: abgd9
   street_address: 2025 Pacific
   city: Los Angeles
   state: CA
@@ -127,6 +136,7 @@ womens_health_of_venice_beach:
   costs_30wks: null
 
 planned_parenthood_la:
+  _id: abgd10
   street_address: 3900 W Manchester
   city: Los Angeles
   state: CA
@@ -141,6 +151,7 @@ planned_parenthood_la:
   costs_30wks: null
 
 la_medical_center:
+  _id: abgd11
   street_address: 5905 Wilshire
   city: Los Angeles
   state: CA
