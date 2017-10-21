@@ -32,7 +32,7 @@ module ClinicFinder
 
     # Attach a clinic's latitude and longitude.
     def determine_clinic_coordinates
-      puts @clinic_structs
+      # puts @clinic_structs
       @clinic_structs.each do |clinic|
         # The Geocoder is looking for something like this:
         # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
