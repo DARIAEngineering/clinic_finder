@@ -19,7 +19,8 @@ class TestClass < MiniTest::Spec
   end
 end
 
-# Mirrors, more or less the DCAF class
+# Mirrors, more or less the DCAF class, and some slight rails-y model
+# behavior for attributes
 class Clinic
   attr_accessor :_id, :name, :street_address, :city,
                 :state, :zip, :accepts_naf,
@@ -29,5 +30,12 @@ class Clinic
 
   def initialize(clinic_hash)
     clinic_hash.each_pair { |k, v| instance_variable_set("@#{k}".to_sym, v) }
+  end
+
+  def attributes
+    vars = instance_variables.map do |val|
+      { val.to_s.delete('@').to_sym => instance_variable_get(val) }
+    end
+    vars.reduce(&:merge)
   end
 end

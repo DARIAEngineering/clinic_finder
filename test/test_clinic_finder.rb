@@ -19,8 +19,8 @@ class TestClinicFinderLocator < TestClass
     it 'should have mirroring clinic and clinic_structs on init' do
       @abortron.clinic_structs.each do |clinic_struct|
         clinic = @abortron.clinics.find { |c| c._id == clinic_struct._id }
-        clinic.each do |k, _v|
-          assert_equal clinic[k], clinic_struct[k]
+        clinic.attributes.each_pair do |k, _v|
+          assert_equal clinic.instance_variable_get("@#{k}"), clinic_struct[k]
         end
       end
     end
