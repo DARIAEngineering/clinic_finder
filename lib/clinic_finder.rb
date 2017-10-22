@@ -26,7 +26,7 @@ module ClinicFinder
     attr_accessor :clinic_structs # a scratch version of clinics
     attr_accessor :patient_context # no reason to not assign this to an obj lvl
 
-    def initialize(clinics, gestational_age: 999,
+    def initialize(clinics, gestational_age: 0,
                    naf_only: false, medicaid_only: false)
       filtered_clinics = filter_by_params clinics,
                                           gestational_age,

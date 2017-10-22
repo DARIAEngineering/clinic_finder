@@ -7,15 +7,11 @@ class TestClinicFinderLocator < TestClass
 
   describe 'initialization with clinics' do
     before do
-      # puts @clinics.first
       @abortron = ClinicFinder::Locator.new @clinics
-      # puts @abortron.inspect.to_s
-      # puts @abortron.clinics.inspect.to_s
     end
 
     it 'should initialize with clinics' do
-      puts @abortron.clinics
-      assert(@abortron.clinics.find { |c| c.name == 'Butte Health Clinic' })
+      assert(@abortron.clinics.find { |c| c.name == 'Butte health clinic' })
       assert_equal @clinics.count, @abortron.clinics.count
       assert_equal @abortron.clinics.count, @abortron.clinic_structs.count
     end

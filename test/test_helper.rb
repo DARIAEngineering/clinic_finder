@@ -12,7 +12,8 @@ class TestClass < MiniTest::Spec
 
     # Problem is in here somewhere
     clinics.keys.map do |clinic_name|
-      humanized_name = { name: ActiveSupport::Inflector.humanize(name) }
+      humanized_name = { name: ActiveSupport::Inflector.humanize(clinic_name) }
+      # puts clinics[clinic_name].merge(humanized_name)
       Clinic.new clinics[clinic_name].merge(humanized_name)
     end
   end
@@ -27,6 +28,6 @@ class Clinic
                 :costs_24wks, :costs_30wks
 
   def initialize(clinic_hash)
-    clinic_hash.each_pair { |k, v| instance_variable_set "@#{k.to_sym}", v }
+    clinic_hash.each_pair { |k, v| instance_variable_set("@#{k}".to_sym, v) }
   end
 end
