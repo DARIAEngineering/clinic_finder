@@ -25,6 +25,12 @@ class TestClinicFinderLocator < TestClass
         end
       end
     end
+
+    it 'should make a patient context obj available' do
+      assert @abortron.respond_to? :patient_context
+      @abortron.patient_context.yolo = 'goat'
+      assert_equal 'goat', @abortron.patient_context.yolo
+    end
   end
 
   describe 'initializing with filters' do
