@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'clinic_finder'
-  s.version     = '0.0.2'
+  s.version     = '0.0.2pre'
   s.date        = '2017-02-23'
   s.summary     = 'Finding abortion clinics based on zip and LMP'
   s.description = 'Help abortion fund case managers match ' \
