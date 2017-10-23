@@ -10,10 +10,8 @@ class TestClass < MiniTest::Spec
     clinics = YAML.load_file File.join(File.dirname(__FILE__),
                                        './fixtures/clinics.yml')
 
-    # Problem is in here somewhere
     clinics.keys.map do |clinic_name|
       humanized_name = { name: ActiveSupport::Inflector.humanize(clinic_name) }
-      # puts clinics[clinic_name].merge(humanized_name)
       Clinic.new clinics[clinic_name].merge(humanized_name)
     end
   end
