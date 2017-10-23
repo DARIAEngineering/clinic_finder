@@ -5,7 +5,7 @@ module ClinicFinder
   module Geocoder
     # Get a patient's latitude and longitude.
     def get_patient_coordinates_from_zip(zipcode)
-      patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode zipcode
+      patient_location = @geocoder.geocode zipcode
       @patient_context.location = patient_location.ll
     end
 
@@ -32,12 +32,10 @@ module ClinicFinder
 
     # Attach a clinic's latitude and longitude.
     def determine_clinic_coordinates
-      # puts @clinic_structs
       @clinic_structs.each do |clinic|
         # The Geocoder is looking for something like this:
         # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
-        location = ::Geokit::Geocoders::GoogleGeocoder.geocode clinic.full_address
-        sleep(0.5) # TODO figure out workaround. probably slamming in api key
+        location = @geocoder.geocode clinic.full_address
         coordinates = location.ll.split(',').map(&:to_f)
 
         clinic.coordinates = Geokit::LatLng.new(coordinates[0], coordinates[1])

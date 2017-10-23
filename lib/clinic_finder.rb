@@ -25,6 +25,7 @@ module ClinicFinder
     attr_accessor :clinics
     attr_accessor :clinic_structs # a scratch version of clinics
     attr_accessor :patient_context # no reason to not assign this to an obj lvl
+    attr_accessor :geocoder
 
     def initialize(clinics, gestational_age: 0,
                    naf_only: false, medicaid_only: false)
@@ -36,6 +37,7 @@ module ClinicFinder
       @clinics = filtered_clinics
       @clinic_structs = build_clinic_structs
       @patient_context = OpenStruct.new
+      @geocoder = set_geocoder
     end
 
     # Return a set of the closest clinics and their attributes,
@@ -83,6 +85,16 @@ module ClinicFinder
       end
       filtered_clinics
     end
+
+    def set_geocoder
+      geocoder = Geokit::Geocoders::GoogleGeocoder
+
+      if ENV['GOOGLE_GEO_API_KEY']
+        geocoder.api_key = ENV['GOOGLE_GEO_API_KEY']
+      end
+      geocoder
+    end
+
 
     # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
     # def decorate_data(data)
