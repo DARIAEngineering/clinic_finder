@@ -52,6 +52,24 @@ class TestClinicFinderLocator < TestClass
       @abortron.clinics.each { |clinic| assert clinic.accepts_naf }
     end
   end
+
+  describe 'locate_nearest_clinics' do
+    before { @abortron = ClinicFinder::Locator.new @clinics, gestational_age: 150 }
+
+    it 'should return closest clinics' do
+      # This should return the two closest clinics out of the three eligible:
+      # One in NM, and the one in LA. (It should exclude the one in Monterey CA.)
+      closest_two_clinics = @abortron.locate_nearest_clinics '73301', limit: 2
+      assert closest_two_clinics[0].distance < closest_two_clinics[1].distance
+      assert_equal 'Albuquerque medical center', closest_two_clinics[0].name
+      assert_equal 'La medical center', closest_two_clinics[1].name
+
+      # It should not return discreet treatment centers in Monterey CA
+      # because we're limiting to just the first two
+      furthest_clinic = 'Discreet treatment centers of ca'
+      assert_nil(closest_two_clinics.find { |c| c.name == furthest_clinic })
+    end
+  end
 end
   # def test_that_initialize_sets_clinic_variable
   # 	assert_kind_of Hash, @abortron.clinics

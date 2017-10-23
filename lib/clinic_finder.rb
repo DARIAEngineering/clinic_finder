@@ -45,7 +45,7 @@ module ClinicFinder
       get_patient_coordinates_from_zip zipcode
       add_distances_to_clinic_openstructs
 
-      @clinic_structs.sort_by(&:distance).reverse.take(limit)
+      @clinic_structs.sort_by(&:distance).take(limit)
     end
 
     # Return a set of the cheapest clinics and their attributes.
