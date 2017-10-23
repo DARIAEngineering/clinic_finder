@@ -54,11 +54,13 @@ class TestClinicFinderLocator < TestClass
   end
 
   describe 'locate_nearest_clinics' do
-    before { @abortron = ClinicFinder::Locator.new @clinics, gestational_age: 150 }
+    before do
+      @abortron = ClinicFinder::Locator.new @clinics, gestational_age: 150
+    end
 
     it 'should return closest clinics' do
       # This should return the two closest clinics out of the three eligible:
-      # One in NM, and the one in LA. (It should exclude the one in Monterey CA.)
+      # One in NM, and the one in LA. It should exclude the one in Monterey CA.
       closest_two_clinics = @abortron.locate_nearest_clinics '73301', limit: 2
       assert closest_two_clinics[0].distance < closest_two_clinics[1].distance
       assert_equal 'Albuquerque medical center', closest_two_clinics[0].name
