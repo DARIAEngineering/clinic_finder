@@ -1,84 +1,114 @@
 require 'yaml'
 require 'geokit'
-require_relative './clinic_finder/gestation_helper'
+require 'ostruct'
+# require_relative './clinic_finder/gestation_helper'
+# require_relative 'clinic_finder/affordability_helper'
+require 'clinic_finder/geocoder'
 
-# Core class
-module Abortron
-class ClinicFinder
-	attr_reader :clinics
+# Use as follows:
+# pt = Patient.find('123');
+# finder = ClinicFinder::Locator.new(
+#   Clinic.all,
+#   gestational_age: pt.gestational_age, # in days
+#   naf_only: true, # Limit results to NAF clinics
+#   medicaid_only: true # Limit results to Medicaid clinics
+# )
+# finder.locate_nearest_clinics pt.zip, limit: 5
+# finder.locate_cheapest_clinics limit: 5
+module ClinicFinder
+  # Core class for accessing stuff. The good stuff is:
+  # * ClinicFinder::Locator#locate_nearest_clinics
+  # * ClinicFinder::Locator#locate_cheapest_clinics
+  class Locator
+    include ClinicFinder::Geocoder
 
-  def initialize(yml_file)
-		@clinics = ::YAML.load_file(yml_file)
-  end
+    attr_accessor :clinics
+    attr_accessor :clinic_structs # a scratch version of clinics
+    attr_accessor :patient_context # no reason to not assign this to an obj lvl
+    attr_accessor :geocoder
 
-  def create_full_address(gestational_age) # need to test filtering gestational limit
-    @clinic_addresses = []
-    filtered_clinics = @clinics.keep_if { |name, info| gestational_age < info['gestational_limit']}
-    filtered_clinics.each do |clinic, info|
-      @clinic_addresses << {name: clinic, address: "#{info['street_address']}, #{info['city']}, #{info['state']}"}
+    def initialize(clinics, gestational_age: 0,
+                   naf_only: false, medicaid_only: false)
+      filtered_clinics = filter_by_params clinics,
+                                          gestational_age,
+                                          naf_only,
+                                          medicaid_only
+
+      @clinics = filtered_clinics
+      @clinic_structs = build_clinic_structs
+      @patient_context = OpenStruct.new
+      @geocoder = set_geocoder
     end
-    @clinic_addresses
-  end
 
-  def clinics_coordinates_conversion
-    @coordinates_hash = {}
-    @clinic_addresses.map! do |address| # {name: 'Oakland Clinic', address: '101 Main St, Oakland, CA'}
-      location = ::Geokit::Geocoders::GoogleGeocoder.geocode(address[:address])
-      float_coordinates = location.ll.split(',').map(&:to_f)
-      @coordinates_hash[address[:name]] = float_coordinates
-      sleep(0.5)
+    # Return a set of the closest clinics and their attributes,
+    # distance included, to a patient's zipcode.
+    # TODO: Clinic objects or just structs?
+    def locate_nearest_clinics(zipcode, limit: 5)
+      get_patient_coordinates_from_zip zipcode
+      add_distances_to_clinic_openstructs
+
+      @clinic_structs.sort_by(&:distance).take(limit)
     end
-    @coordinates_hash
-  end
 
-  def patient_coordinates_conversion(patient_zipcode)
-    @patient_location = ::Geokit::Geocoders::GoogleGeocoder.geocode(patient_zipcode)
-    @patient_float_coordinates = @patient_location.ll
-  end
+    # Return a set of the cheapest clinics and their attributes.
+    # TODO: Implement.
+    def locate_cheapest_clinic(gestational_age: 999, limit: 5)
+      puts 'NOT IMPLEMENTED YET'
+      # @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
+      # filtered_clinics = filter_by_params gestational_age, naf_only, medicaid_only
 
-  def calculate_distance
-    distances = []
-    @coordinates_hash.each do |name, coordinates|
-      ll = Geokit::LatLng.new(coordinates[0], coordinates[1])
-      distances << {name: name, distance: ll.distance_to(@patient_float_coordinates)}
-      # distances = [ {name: "Oakland", distance: 2}, {name: "San Francisco", distance: 1} ]
+      # @gestational_tier = @helper.gestational_tier
+      # decorate_data(available_clinics)
     end
-    @distances = distances.sort_by {|distance| distance[:distance]}
-  end
+
+    private
+
+    # Set up mutable clinic structs.
+    def build_clinic_structs
+      @clinics.map do |clinic|
+        data = if clinic.is_a? OpenStruct
+                 clinic.marshal_dump
+               else
+                 clinic.attributes # ActiveRecord, Mongoid, etc.
+               end
+        OpenStruct.new data
+      end
+    end
+
+    # Based on initialization fields, narrow the list of clinics to
+    # just what we need.
+    def filter_by_params(clinics, gestational_age, naf_only, medicaid_only)
+      filtered_clinics = clinics.keep_if do |clinic|
+        gestational_age < (clinic.gestational_limit || 1000) &&
+          (naf_only ? clinic.accepts_naf : true) &&
+          (medicaid_only ? clinic.accepts_medicaid : true)
+      end
+      filtered_clinics
+    end
+
+    def set_geocoder
+      geocoder = Geokit::Geocoders::GoogleGeocoder
+
+      if ENV['GOOGLE_GEO_API_KEY']
+        geocoder.api_key = ENV['GOOGLE_GEO_API_KEY']
+      end
+      geocoder
+    end
 
 
-  def find_closest_clinics
-    @distances[0..2]
-  end
+    # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
+    # def decorate_data(data)
+    #   sorted_clinics = []
+    #   three_cheapest(data).map { |clinic_array| sorted_clinics << { name: clinic_array.first, cost: clinic_array.last[@gestational_tier] } }
+    #   sorted_clinics
+    # end
 
-  # need to write test to make sure everything gets called
-  def locate_nearest_clinic(patient_zipcode:, gestational_age:)
-    patient_coordinates_conversion(patient_zipcode)
-    create_full_address(gestational_age)
-    clinics_coordinates_conversion
-    calculate_distance
-    find_closest_clinics
-  end
+    # def three_cheapest(data)
+    #   data.sort_by { |name, information| information[@gestational_tier] }.first(3)
+    # end
 
-  def locate_cheapest_clinic(gestational_age:, naf_clinics_only: false)
-    @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
-    @gestational_tier = @helper.gestational_tier
-    decorate_data(available_clinics)
+    # def available_clinics
+    #   @clinics.keep_if { |name, information| information[@gestational_tier] && @helper.within_gestational_limit?(information['gestational_limit']) }
+    # end
   end
-
-  # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
-  private def decorate_data(data)
-    sorted_clinics = []
-    three_cheapest(data).map { |clinic_array| sorted_clinics << { name: clinic_array.first, cost: clinic_array.last[@gestational_tier] } }
-    sorted_clinics
-  end
-
-  private def three_cheapest(data)
-    data.sort_by { |name, information| information[@gestational_tier] }.first(3)
-  end
-
-  private def available_clinics
-    @clinics.keep_if { |name, information| information[@gestational_tier] && @helper.within_gestational_limit?(information['gestational_limit']) }
-  end
-end
 end
