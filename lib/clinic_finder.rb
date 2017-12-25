@@ -28,7 +28,8 @@ module ClinicFinder
     attr_accessor :geocoder
 
     def initialize(clinics, gestational_age: 0,
-                   naf_only: false, medicaid_only: false)
+                   naf_only: false, medicaid_only: false,
+                   google_geo_api_key: nil)
       filtered_clinics = filter_by_params clinics,
                                           gestational_age,
                                           naf_only,
@@ -37,7 +38,7 @@ module ClinicFinder
       @clinics = filtered_clinics
       @clinic_structs = build_clinic_structs
       @patient_context = OpenStruct.new
-      @geocoder = initialize_geocoder
+      @geocoder = initialize_geocoder google_geo_api_key
     end
 
     # Return a set of the closest clinics and their attributes,
