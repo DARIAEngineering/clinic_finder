@@ -37,7 +37,7 @@ module ClinicFinder
       @clinics = filtered_clinics
       @clinic_structs = build_clinic_structs
       @patient_context = OpenStruct.new
-      @geocoder = set_geocoder
+      @geocoder = initialize_geocoder
     end
 
     # Return a set of the closest clinics and their attributes,
@@ -86,29 +86,10 @@ module ClinicFinder
       filtered_clinics
     end
 
-    def set_geocoder
+    def initialize_geocoder(google_geo_api_key)
       geocoder = Geokit::Geocoders::GoogleGeocoder
-
-      if ENV['GOOGLE_GEO_API_KEY']
-        geocoder.api_key = ENV['GOOGLE_GEO_API_KEY']
-      end
+      geocoder.api_key = google_geo_api_key || ENV['GOOGLE_GEO_API_KEY']
       geocoder
     end
-
-
-    # This method makes the sorted clinic data more easily traversible by converting the data into a hash of names (keys) and informational attributes (values) rather than leaving them as separate values in a nested array.
-    # def decorate_data(data)
-    #   sorted_clinics = []
-    #   three_cheapest(data).map { |clinic_array| sorted_clinics << { name: clinic_array.first, cost: clinic_array.last[@gestational_tier] } }
-    #   sorted_clinics
-    # end
-
-    # def three_cheapest(data)
-    #   data.sort_by { |name, information| information[@gestational_tier] }.first(3)
-    # end
-
-    # def available_clinics
-    #   @clinics.keep_if { |name, information| information[@gestational_tier] && @helper.within_gestational_limit?(information['gestational_limit']) }
-    # end
   end
 end
