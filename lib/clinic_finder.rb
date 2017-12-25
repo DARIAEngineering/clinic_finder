@@ -2,7 +2,7 @@ require 'yaml'
 require 'geokit'
 require 'ostruct'
 # require_relative './clinic_finder/gestation_helper'
-# require_relative 'clinic_finder/affordability_helper'
+require 'clinic_finder/affordability'
 require 'clinic_finder/geocoder'
 
 # Use as follows:
@@ -21,6 +21,7 @@ module ClinicFinder
   # * ClinicFinder::Locator#locate_cheapest_clinics
   class Locator
     include ClinicFinder::Geocoder
+    include ClinicFinder::Affordability
 
     attr_accessor :clinics
     attr_accessor :clinic_structs # a scratch version of clinics
@@ -52,8 +53,11 @@ module ClinicFinder
 
     # Return a set of the cheapest clinics and their attributes.
     # TODO: Implement.
-    def locate_cheapest_clinic(gestational_age: 999, limit: 5)
-      puts 'NOT IMPLEMENTED YET'
+    def locate_cheapest_clinic(gestational_age: 0, limit: 5)
+      gestation_in_weeks = gestation_to_weeks gestational_age
+      add_cost_to_clinic_openstructs
+      @clinic_structs.sort_by(&:cost).take(limit)
+
       # @helper = ::ClinicFinder::GestationHelper.new(gestational_age)
       # filtered_clinics = filter_by_params gestational_age, naf_only, medicaid_only
 
